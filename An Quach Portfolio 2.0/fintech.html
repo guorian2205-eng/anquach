@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Digital Lending in Vietnam — MOMO Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#f7f2e7;--ivory-deep:#efe6d3;--ivory-soft:#fbf7ee;--paper:#fffdf7;
+    --ink:#1f1611;--ink-soft:#3a2d24;--muted:#6b5a4d;--muted-soft:#8f7f6f;
+    --burgundy:#5a1a1f;--burgundy-deep:#3d1014;--burgundy-bright:#7a2328;
+    --rose:#c4697a;--gold:#a87847;--gold-soft:#c89a6b;
+    --rule:rgba(31,22,17,0.12);--rule-strong:rgba(31,22,17,0.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{font-family:'Inter',sans-serif;background:var(--ivory);color:var(--ink);font-size:16px;line-height:1.6;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse at 15% 20%,rgba(168,120,71,.08) 0%,transparent 50%),
+      radial-gradient(ellipse at 85% 70%,rgba(90,26,31,.06) 0%,transparent 55%);opacity:.35}
+  ::selection{background:var(--burgundy);color:var(--ivory-soft)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+  @media(max-width:720px){.wrap{padding:0 22px}}
+
+  nav.top{position:fixed;top:0;left:0;right:0;z-index:50;padding:22px 40px;display:flex;align-items:center;justify-content:space-between;transition:all .4s;border-bottom:1px solid transparent}
+  nav.top.scrolled{background:rgba(247,242,231,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:14px 40px;border-bottom:1px solid var(--rule)}
+  nav.top .brand{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;display:inline-flex;align-items:center;gap:10px;color:var(--ink)}
+  nav.top .brand em{font-style:italic}
+  nav.top .brand .dot{width:6px;height:6px;border-radius:50%;background:var(--burgundy)}
+  nav.top .links{display:flex;align-items:center;gap:28px;font-size:13.5px;color:var(--ink-soft)}
+  nav.top .links a:hover{color:var(--burgundy)}
+  nav.top .cv{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule-strong);padding:9px 16px;border-radius:2px;font-size:13px;letter-spacing:.04em;transition:all .35s;color:var(--ink)}
+  nav.top .cv:hover{background:var(--ink);color:var(--ivory-soft);border-color:var(--ink)}
+  nav.top .cv svg{width:11px;height:11px}
+  @media(max-width:720px){nav.top{padding:16px 22px}nav.top.scrolled{padding:10px 22px}nav.top .links{gap:16px;font-size:12.5px}}
+
+  .proj-hero{padding:150px 0 90px;position:relative;z-index:2}
+  .back-link{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:50px;transition:color .3s}
+  .back-link:hover{color:var(--burgundy)}
+  .proj-meta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:36px}
+  .proj-meta .pg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:0;text-transform:none;color:var(--burgundy-deep)}
+  .proj-meta .sep{width:4px;height:4px;border-radius:50%;background:var(--rule-strong)}
+  .proj-hero h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(40px,6.5vw,82px);line-height:1.02;letter-spacing:-.02em;margin-bottom:36px;max-width:1050px}
+  .proj-hero h1 em{font-style:italic;color:var(--burgundy-deep)}
+  .lede{font-family:'Cormorant Garamond',serif;font-size:clamp(19px,2vw,24px);line-height:1.5;color:var(--ink-soft);font-style:italic;max-width:820px;margin-bottom:44px}
+  .tag-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+  .tag-chip{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:7px 14px;border:1px solid var(--rule);border-radius:100px;background:var(--paper)}
+  .tag-chip.accent{background:var(--burgundy);color:var(--ivory-soft);border-color:var(--burgundy)}
+  .redacted-note{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border:1px dashed var(--rule-strong);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--muted)}
+  .redacted-note svg{width:14px;height:14px;flex-shrink:0;color:var(--burgundy)}
+  .redacted{color:var(--muted);font-family:'Cormorant Garamond',serif;font-style:italic}
+  .redacted::before{content:'['}
+  .redacted::after{content:']'}
+
+  .div-label{display:flex;align-items:center;justify-content:center;gap:18px;padding:60px 0;color:var(--muted)}
+  .div-label svg{width:10px;height:10px;opacity:.7}
+  .div-label span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;letter-spacing:.05em}
+
+  section.chap{padding:90px 0;position:relative;z-index:2}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--burgundy);font-weight:500;margin-bottom:22px}
+  .eyebrow .pg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:0;text-transform:none;color:var(--burgundy-deep)}
+  h2.chapter{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4.6vw,54px);line-height:1.08;letter-spacing:-.015em;max-width:900px;margin-bottom:24px}
+  h2.chapter em{font-style:italic;color:var(--burgundy-deep)}
+  .chapter-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--muted);max-width:700px;margin-bottom:70px}
+
+  .two-col{display:grid;grid-template-columns:0.7fr 1fr;gap:80px;padding:60px 0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule)}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;gap:32px}}
+  .two-col h3{position:sticky;top:100px;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(26px,3vw,38px);line-height:1.1;color:var(--ink);letter-spacing:-.01em}
+  .two-col h3 em{font-style:italic;color:var(--burgundy-deep)}
+  .two-col .body p{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1.6;color:var(--ink-soft);margin-bottom:22px}
+  .two-col .body p em{color:var(--burgundy-deep);font-style:italic}
+
+  .steps{display:flex;flex-direction:column;gap:50px}
+  .step{display:grid;grid-template-columns:140px 1fr;gap:50px;padding:40px 0;border-top:1px solid var(--rule)}
+  @media(max-width:820px){.step{grid-template-columns:1fr;gap:20px;padding:28px 0}}
+  .step .roman{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:68px;line-height:1;color:var(--burgundy);letter-spacing:-.02em}
+  .step .lbl{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .step h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(24px,3vw,34px);line-height:1.15;color:var(--ink);margin-bottom:18px;letter-spacing:-.01em}
+  .step h3 em{font-style:italic;color:var(--burgundy-deep)}
+  .step p{font-size:15.5px;line-height:1.72;color:var(--ink-soft);margin-bottom:14px;max-width:720px}
+  .step .note{display:flex;gap:14px;margin-top:18px;padding:16px 20px;border-left:2px solid var(--burgundy);background:var(--ivory-soft);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--burgundy-deep);max-width:720px}
+  .step .note::before{content:'note.';font-family:'Inter',sans-serif;font-style:normal;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);padding-top:4px;flex-shrink:0}
+
+  .findings{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--rule-strong)}
+  @media(max-width:820px){.findings{grid-template-columns:1fr}}
+  .finding{padding:40px 36px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);transition:background .4s}
+  .finding:nth-child(2n){border-right:none}
+  @media(max-width:820px){.finding{border-right:none}}
+  .finding:hover{background:var(--ivory-soft)}
+  .finding .roman{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:28px;color:var(--burgundy);margin-bottom:14px}
+  .finding h4{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:24px;line-height:1.2;color:var(--ink);margin-bottom:16px;letter-spacing:-.005em}
+  .finding h4 em{font-style:italic;color:var(--burgundy-deep)}
+  .finding p{font-size:15px;line-height:1.72;color:var(--ink-soft)}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:820px){.stats{grid-template-columns:1fr}}
+  .stat{padding:44px 32px;background:var(--paper);border:1px solid var(--rule);transition:all .4s}
+  .stat:hover{border-color:var(--burgundy);transform:translateY(-2px)}
+  .stat .big{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(44px,5.5vw,64px);line-height:1;color:var(--burgundy-deep);letter-spacing:-.02em;margin-bottom:22px;font-style:italic}
+  .stat p{font-size:14.5px;line-height:1.6;color:var(--ink-soft)}
+
+  .proj-nav{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:70px 0;border-top:1px solid var(--rule-strong)}
+  @media(max-width:720px){.proj-nav{grid-template-columns:1fr}}
+  .proj-nav a{display:block;padding:30px;border:1px solid var(--rule);transition:all .4s;background:var(--paper)}
+  .proj-nav a:hover{background:var(--ivory-soft);border-color:var(--rule-strong)}
+  .proj-nav .dir{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .proj-nav .nm{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:var(--burgundy-deep)}
+  .proj-nav a.next{text-align:right}
+
+  footer{padding:50px 40px 40px;border-top:1px solid var(--rule);position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+  footer .mid{display:inline-flex;align-items:center;gap:10px;font-family:'Caveat',cursive;font-size:17px;color:var(--ink-soft)}
+  footer .mid svg{width:20px;height:20px}
+  @media(max-width:720px){footer{flex-direction:column;text-align:center;padding:40px 22px}}
+
+  .cat-companion{position:fixed;bottom:26px;right:26px;width:40px;height:40px;opacity:0;pointer-events:none;transition:opacity .5s,transform .4s;z-index:40;cursor:pointer;background:var(--paper);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--rule-strong);box-shadow:0 8px 24px -10px rgba(31,22,17,.25)}
+  .cat-companion.show{opacity:.95;pointer-events:auto}
+  .cat-companion:hover{transform:translateY(-3px) scale(1.06)}
+  .cat-companion svg{width:22px;height:22px}
+
+  .reveal,.reveal-fade,.reveal-scale{opacity:0;transition:opacity .9s ease,transform .9s ease}
+  .reveal{transform:translateY(30px)}
+  .reveal-scale{transform:scale(.97)}
+  .reveal.in,.reveal-fade.in,.reveal-scale.in{opacity:1;transform:none}
+  [data-stagger] > *{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+  [data-stagger].in > *{opacity:1;transform:none}
+
+.slides-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 30px; }
+  @media(max-width: 820px) { .slides-grid { grid-template-columns: 1fr; gap: 24px; } }
+  .slide-card { margin: 0; }
+  .slide-card .frame { border: 1px solid var(--rule); background: var(--paper); padding: 12px; margin-bottom: 16px; transition: border-color 0.4s; }
+  .slide-card:hover .frame { border-color: var(--rule-strong); }
+  .slide-card img { width: 100%; height: auto; display: block; }
+  .slide-card .cap { display: flex; gap: 12px; font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; }
+  .slide-card .cap .roman { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--burgundy); font-weight: 500; font-size: 20px; }
+  
+
+</style>
+</head>
+<body>
+
+<nav class="top" id="nav">
+  <a href="index.html" class="brand">An <em>Quach</em><span class="dot"></span></a>
+  <div class="links">
+    <a href="index.html#works">← Back to portfolio</a>
+    <a href="assets/An-Quach-CV.pdf" download class="cv">CV
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 2v7M3 6l3 3 3-3"/></svg>
+    </a>
+  </div>
+</nav>
+
+<section class="proj-hero">
+  <div class="wrap">
+    <a href="index.html#works" class="back-link">← Back to portfolio</a>
+    <div class="proj-meta">
+      <span class="pg">§</span>
+      <span>Project Example 02</span><span class="sep"></span>
+      <span>An Industry Research</span><span class="sep"></span>
+      <span>Freelance</span><span class="sep"></span>
+      <span>2025</span><span class="sep"></span>
+    </div>
+    <h1>MoMo’s P2P in Vietnam — <em>from transactional to relational</em>.</h1>
+<p class="lede">A strategy case on redesigning MoMo’s P2P experience in Vietnam — mapping the payment landscape, identifying bill-splitting friction, and turning shared money flows into a more social, habit-forming product direction.</p>
+<div class="tag-chips">
+  <span class="tag-chip accent">MoMo P2P Redesign</span>
+  <span class="tag-chip">Fintech</span>
+  <span class="tag-chip">Consumer Journey</span>
+  <span class="tag-chip">Bill Splitting</span>
+  <span class="tag-chip">Feature Strategy</span>
+  <span class="tag-chip">GTM Strategy</span>
+</div>
+<div class="redacted-note">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="7"/><path d="M8 7v5M8 4.5v.2"/></svg>
+  Select figures redacted — confidentiality honored; frameworks preserved.
+</div>
+</div>
+</section>
+
+<div class="wrap">
+  <div class="div-label reveal-fade">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6" cy="6" r="5"/></svg>
+    <span>Overview</span>
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6" cy="6" r="5"/></svg>
+  </div>
+</div>
+
+<section class="chap" style="padding-top:10px">
+  <div class="wrap">
+    <div class="two-col reveal">
+      <h3>The brief, <em>honestly</em>.</h3>
+      <div class="body">
+        <p>MoMo was operating in a fast-growing but more competitive payment environment. Mobile-wallet penetration in Vietnam had risen sharply, MoMo remained the most used e-wallet among Vietnamese respondents, yet a large share of activated wallets were still inactive. At the same time, QR payments and bank apps were eroding the advantage of simple wallet-to-wallet transfers. The problem was no longer access alone. It was engagement.</p>
+        <p>The case therefore reframed P2P as a relational product question: how could MoMo turn everyday shared payments into repeat behavior? The strongest opportunity in the deck was bill splitting, where user demand was clear, product support remained weak, and MoMo had room to build a more social, trackable, and habit-forming experience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chap">
+  <div class="wrap">
+    <div class="eyebrow reveal-fade"><span class="pg">§</span> Process</div>
+    <h2 class="chapter reveal">From landscape to recommendation in <em>four deliberate moves</em>.</h2>
+    <p class="chapter-sub reveal-fade">The logic moved from market pressure to user friction, then from product design to rollout.</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="roman">i.</div>
+        <div>
+          <div class="lbl">Step 01 · Market Landscape & Problem Framing</div>
+          <h3>Understand the payment shift before proposing the feature.</h3>
+          <p>Started with Vietnam’s payment landscape: rising wallet penetration, high inactivity, weaker network effects, and growing pressure from QR payments and bank apps. This framed the case as a P2P redesign problem rather than a pure acquisition problem.</p>
+          <div class="note">The useful market map was the one that clarified why simple transfers were no longer enough.</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="roman">ii.</div>
+        <div>
+          <div class="lbl">Step 02 · User Journey & Competitor Gap Analysis</div>
+          <h3>The friction was not paying. It was <em>splitting cleanly</em>.</h3>
+          <p>Mapped the end-to-end bill-splitting journey and identified recurring pain points: hidden entry points, even-only splits, no saved groups, weak tracking for non-MoMo users, awkward reminders, and low social payoff. Benchmarked these gaps against tools like Splitwise, Revolut, Venmo, KakaoPay, and Alipay.</p>
+          <div class="note">The strongest pain point was not technical difficulty alone, but the social friction around asking, tracking, and following up.</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="roman">iii.</div>
+        <div>
+          <div class="lbl">Step 03 · Segment Choice & Solution Design</div>
+          <h3>Prioritize the users who make the network <em>spread</em>.</h3>
+          <p>Prioritized “Friends Groups’ Payers” as the core segment, based on transaction frequency and influence over adjacent use cases like travel, rent, and gifting. The solution concept focused on saved groups, flexible splits, AI bill scanning, clearer tracking, softer reminders, and gamified incentives.</p>
+          <div class="note">The design choice was not to solve every P2P use case first, but to start where recurrence and social influence were strongest.</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="roman">iv.</div>
+        <div>
+          <div class="lbl">Step 04 · Rollout Logic & GTM Plan</div>
+          <h3>Make the feature usable first, then make it <em>habitual</em>.</h3>
+          <p>The recommendation was phased from a core MVP into smarter tracking, reminders, gamification, and ecosystem scaling. The GTM plan leaned on MoMo’s existing user base, in-app prompts, social-first messaging, campus and lifestyle creators, and selective offline activation to make group splitting more visible and repeatable.</p>
+          <div class="note">The rollout logic treated habit formation, not feature launch alone, as the real job.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chap">
+  <div class="wrap">
+    <div class="eyebrow reveal-fade"><span class="pg">§</span> Deliverables</div>
+    <h2 class="chapter reveal">What the <em>case</em> produced.</h2>
+
+    <div class="findings reveal">
+      <div class="finding">
+        <div class="roman">i.</div>
+        <h4>Problem framing & <em>market context</em>.</h4>
+        <p>A structured view of why MoMo’s existing P2P proposition was under pressure: wallet inactivity, weaker network effects, loss of transactional advantage, and the need to move toward engagement-first use cases.</p>
+      </div>
+      <div class="finding">
+        <div class="roman">ii.</div>
+        <h4>User journey & <em>competitor gap map</em>.</h4>
+        <p>A clear breakdown of where bill splitting currently fails for users, and how existing products only partially solve tracking, reminders, group flexibility, and social ease.</p>
+      </div>
+      <div class="finding">
+        <div class="roman">iii.</div>
+        <h4>Segment priority & <em>solution concept</em>.</h4>
+        <p>A recommended starting segment, paired with a feature set built around saved groups, flexible splits, AI-supported receipt parsing, better tracking, and softer social repayment mechanics.</p>
+      </div>
+      <div class="finding">
+        <div class="roman">iv.</div>
+        <h4>Rollout roadmap & <em>go-to-market plan</em>.</h4>
+        <p>A phased launch logic with success metrics, retention and virality mechanics, and a social-first GTM approach designed to make group splitting more habitual inside MoMo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="chap">
+  <div class="wrap">
+    <div class="eyebrow reveal-fade"><span class="pg">§</span> Work Example</div>
+    <h2 class="chapter reveal">A Glimpse of <em>the Deck</em>.</h2>
+
+    <div class="slides-grid reveal">
+      <figure class="slide-card" data-full="slides/Fintech-01.png">
+        <div class="frame"><img src="slides/Fintech-01.png" alt="Market landscape and problem framing for MoMo P2P"></div>
+        <figcaption class="cap"><span class="roman">i.</span><span class="txt">Market landscape — <em>payment shift & problem framing</em>.</span></figcaption>
+      </figure>
+      <figure class="slide-card" data-full="slides/Fintech-02.png">
+        <div class="frame"><img src="slides/Fintech-02.png" alt="User journey and gap analysis for bill splitting"></div>
+        <figcaption class="cap"><span class="roman">ii.</span><span class="txt">User journey — <em>friction points in the bill-splitting experience</em>.</span></figcaption>
+      </figure>
+      <figure class="slide-card" data-full="slides/Fintech-03.png">
+        <div class="frame"><img src="slides/Fintech-03.png" alt="Segment priority and solution concept"></div>
+        <figcaption class="cap"><span class="roman">iii.</span><span class="txt">Solution concept — <em>flexible splits, saved groups & softer reminders</em>.</span></figcaption>
+      </figure>
+      <figure class="slide-card" data-full="slides/Fintech-04.png">
+        <div class="frame"><img src="slides/Fintech-04.png" alt="Rollout roadmap and go-to-market plan"></div>
+        <figcaption class="cap"><span class="roman">iv.</span><span class="txt">Rollout logic — <em>phased GTM strategy for habit formation</em>.</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="chap">
+  <div class="wrap">
+    <div class="eyebrow reveal-fade"><span class="pg">§</span> Outcomes</div>
+    <h2 class="chapter reveal">What the work <em>clarified</em>.</h2>
+
+    <div class="stats reveal" data-stagger>
+      <div class="stat">
+        <div class="big">focused</div>
+        <p>Reframed the opportunity from generic P2P payments to a clearer relational use case: bill splitting as an entry point to stronger recurring engagement.</p>
+      </div>
+      <div class="stat">
+        <div class="big">sequenced</div>
+        <p>Turned the solution into a phased roadmap, from core MVP fixes to gamified retention mechanics and wider ecosystem scaling.</p>
+      </div>
+      <div class="stat">
+        <div class="big">designed</div>
+        <p>Connected user pain points to feature choices, metric buckets, and go-to-market actions in a way the case could defend end to end.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="position:relative;z-index:2">
+  <div class="wrap">
+    <div class="proj-nav">
+      <a href="research.html">
+        <div class="dir">← Previous Project</div>
+        <div class="nm">Second-Hand Luxury Research</div>
+      </a>
+      <a href="strategy.html" class="next">
+        <div class="dir">Next Project →</div>
+        <div class="nm">Beiersdorf × Unilever Case</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 An Quach</div>
+  <div class="mid">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M4 20c0-5 2-8 8-8s8 3 8 8H4z" fill="currentColor"/><path d="M5 12l-2-5 4 2M19 12l2-5-4 2" fill="currentColor"/></svg>
+    drawn by a cat who keeps editing my drafts.
+  </div>
+</footer>
+
+<a href="#" class="cat-companion" id="catTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M4 20c0-5 2-8 8-8s8 3 8 8H4z" fill="var(--ink)"/>
+    <path d="M5 12l-2-5 4 2M19 12l2-5-4 2" fill="var(--ink)"/>
+    <circle cx="9.5" cy="16.5" r="1" fill="var(--gold)"/>
+    <circle cx="14.5" cy="16.5" r="1" fill="var(--gold)"/>
+  </svg>
+</a>
+
+<script>
+  const nav=document.getElementById('nav');
+  const catTop=document.getElementById('catTop');
+  const onScroll=()=>{nav.classList.toggle('scrolled',window.scrollY>20);catTop.classList.toggle('show',window.scrollY>400)};
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
+      if(e.target.hasAttribute('data-stagger')){[...e.target.children].forEach((c,i)=>{c.style.transitionDelay=(i*80)+'ms'})}
+      io.unobserve(e.target)}});
+  },{threshold:.12,rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('.reveal,.reveal-fade,.reveal-scale,[data-stagger]').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
